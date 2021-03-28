@@ -14,7 +14,7 @@
 	<name>spring-statemachine-pg</name>
 	<description>Test project for Spring State machine</description>
 	<properties>
-		<java.version>16</java.version>
+		<java.version>13</java.version>
 	</properties>
 	<dependencies>
 		<dependency>
