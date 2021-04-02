@@ -1,6 +1,6 @@
 package dev.marchuk.statemachine.domain;
 
-public enum State {
+public enum ActivityState {
     CREATED,
     DELETED,
     WAIT_FOR_PROVIDER_APPROVE,
