@@ -1,7 +1,7 @@
 package dev.marchuk.statemachine.config;
 
-import dev.marchuk.statemachine.domain.Events;
-import dev.marchuk.statemachine.domain.States;
+import dev.marchuk.statemachine.domain.Event;
+import dev.marchuk.statemachine.domain.State;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.statemachine.config.EnableStateMachine;
 import org.springframework.statemachine.config.EnumStateMachineConfigurerAdapter;
@@ -13,47 +13,93 @@ import java.util.EnumSet;
 
 @Configuration
 @EnableStateMachine
-public class StateMachineConfig extends EnumStateMachineConfigurerAdapter<States, Events> {
+public class StateMachineConfig extends EnumStateMachineConfigurerAdapter<State, Event> {
 
     @Override
-    public void configure(StateMachineStateConfigurer<States, Events> states) throws Exception {
+    public void configure(StateMachineStateConfigurer<State, Event> states) throws Exception {
         states.withStates()
-                .initial(States.CREATED)
-                .states(EnumSet.allOf(States.class));
+                .initial(State.CREATED)
+                .states(EnumSet.allOf(State.class));
     }
 
     @Override
-    public void configure(final StateMachineConfigurationConfigurer<States, Events> config) throws Exception {
+    public void configure(final StateMachineConfigurationConfigurer<State, Event> config) throws Exception {
         config.withConfiguration()
                 .autoStartup(true);
     }
 
     @Override
-    public void configure(StateMachineTransitionConfigurer<States, Events> transitions) throws Exception {
+    public void configure(StateMachineTransitionConfigurer<State, Event> transitions) throws Exception {
         transitions.withExternal()
-                .source(States.CREATED).target(States.EDITED)
-                .event(Events.EDIT)
+//                CREATED
+                .source(State.CREATED).target(State.EDITED)
+                .event(Event.EDIT)
                 .and()
 
                 .withExternal()
-                .source(States.CREATED).target(States.DELETED)
-                .event(Events.DELETE)
+                .source(State.CREATED).target(State.DELETED)
+                .event(Event.DELETE)
                 .and()
 
                 .withExternal()
-                .source(States.CREATED).target(States.WAIT_FOR_PROVIDER_APPROVE)
-                .event(Events.SEND_FOR_APPROVE)
+                .source(State.CREATED).target(State.WAIT_FOR_PROVIDER_APPROVE)
+                .event(Event.SEND_FOR_APPROVE)
                 .and()
 
                 .withExternal()
-                .source(States.CREATED).target(States.PUBLISHED)
-                .event(Events.PUBLISH)
+                .source(State.CREATED).target(State.PUBLISHED)
+                .event(Event.PUBLISH)
+                .and()
+//              EDITED
+                .withExternal()
+                .source(State.EDITED).target(State.WAIT_FOR_PROVIDER_APPROVE)
+                .event(Event.SEND_FOR_APPROVE)
+                .and()
+
+                .withInternal()
+                .source(State.EDITED)
+                .event(Event.EDIT)
                 .and()
 
                 .withExternal()
-                .source(States.EDITED).target(States.WAIT_FOR_PROVIDER_APPROVE)
-                .event(Events.SEND_FOR_APPROVE)
+                .source(State.EDITED).target(State.PUBLISHED)
+                .event(Event.PUBLISH)
+                .and()
+//              WAIT_FOR_PROVIDER_APPROVE
+                .withExternal()
+                .source(State.WAIT_FOR_PROVIDER_APPROVE).target(State.PROVIDER_APPROVED)
+                .event(Event.APPROVE)
+                .and()
 
+                .withExternal()
+                .source(State.WAIT_FOR_PROVIDER_APPROVE).target(State.PROVIDER_DECLINED)
+                .event(Event.REJECT)
+                .and()
+//              PROVIDER_APPROVED
+                .withExternal()
+                .source(State.PROVIDER_APPROVED).target(State.PUBLISHED)
+                .event(Event.PUBLISH)
+                .and()
+//              PROVIDER_DECLINED
+                .withExternal()
+                .source(State.PROVIDER_DECLINED).target(State.EDITED)
+                .event(Event.EDIT)
+                .and()
+//              PUBLISHED
+                .withExternal()
+                .source(State.PUBLISHED).target(State.ARCHIVED)
+                .event(Event.ARCHIVE)
+                .and()
+
+                .withExternal()
+                .source(State.PUBLISHED).target(State.EDITED)
+                .event(Event.EDIT)
+                .and()
+//              ARCHIVED
+                .withExternal()
+                .source(State.ARCHIVED).target(State.EDITED)
+                .event(Event.RESTORE)
+                .and()
         ;
     }
 

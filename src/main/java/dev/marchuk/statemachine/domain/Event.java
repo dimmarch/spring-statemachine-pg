@@ -1,6 +1,6 @@
 package dev.marchuk.statemachine.domain;
 
-public enum Events {
+public enum Event {
     CREATE,
     DELETE,
     EDIT,
@@ -9,4 +9,5 @@ public enum Events {
     APPROVE,
     REJECT,
     ARCHIVE,
+    RESTORE,
 }
