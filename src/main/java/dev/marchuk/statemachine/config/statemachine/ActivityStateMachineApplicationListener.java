@@ -71,8 +71,8 @@ public class ActivityStateMachineApplicationListener implements StateMachineList
     }
 
     @Override
-    public void extendedStateChanged(Object from, Object to) {
-        log.debug("extended state changed: {} -> {}", from, to);
+    public void extendedStateChanged(Object key, Object value) {
+        log.debug("extended state changed: {} -> {}", key, value);
     }
 
     @Override
