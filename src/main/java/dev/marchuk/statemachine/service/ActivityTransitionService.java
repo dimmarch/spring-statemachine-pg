@@ -1,6 +1,7 @@
 package dev.marchuk.statemachine.service;
 
 import dev.marchuk.statemachine.dao.ActivityRepository;
+import dev.marchuk.statemachine.domain.Activity;
 import dev.marchuk.statemachine.domain.ActivityState;
 import dev.marchuk.statemachine.domain.Event;
 import lombok.RequiredArgsConstructor;
@@ -22,9 +23,10 @@ public class ActivityTransitionService {
     private final ActivityRepository activityRepository;
 
     public String makeTransition(Integer activityId, Event transition) {
+        var activity = activityRepository.getActivity(activityId);
+        var stateMachine = getStateMachine(activity);
         var message = MessageBuilder
                 .withPayload(transition).build();
-        var stateMachine = getStateMachine(activityId);
         var currentState = stateMachine.getState();
         var results = stateMachine.sendEvent(Mono.just(message))
                 .collectList().block();
@@ -35,18 +37,19 @@ public class ActivityTransitionService {
             throw new UnsupportedOperationException(transition.name() + " event is denied");
         }
         var newState = stateMachine.getState();
+        activity.setState(newState.getId());
+        activityRepository.saveActivity(activity);
         return String.format("%s -> %s", currentState.getId().name(), newState.getId().name());
     }
 
-    public StateMachine<ActivityState, Event> getStateMachine(Integer activityId) {
+    public StateMachine<ActivityState, Event> getStateMachine(Activity activity) {
         var stateMachine = stateMachineFactory.getStateMachine();
-        var activity = activityRepository.getActivity(activityId);
         stateMachine
                 .getStateMachineAccessor()
                 .doWithAllRegions(access -> {
                     access.resetStateMachine(new DefaultStateMachineContext<>(activity.getState(), null, null, null, null));
                 });
-        stateMachine.getExtendedState().getVariables().put("ACTIVITY_ID", activityId);
+        stateMachine.getExtendedState().getVariables().put("ACTIVITY_ID", activity.getId());
         stateMachine.startReactively().subscribe();
         return stateMachine;
     }
