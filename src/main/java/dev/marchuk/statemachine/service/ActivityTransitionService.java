@@ -1,5 +1,6 @@
 package dev.marchuk.statemachine.service;
 
+import dev.marchuk.statemachine.dao.ActivityRepository;
 import dev.marchuk.statemachine.domain.ActivityState;
 import dev.marchuk.statemachine.domain.Event;
 import lombok.RequiredArgsConstructor;
@@ -7,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.statemachine.StateMachine;
 import org.springframework.statemachine.StateMachineEventResult;
+import org.springframework.statemachine.config.StateMachineFactory;
 import org.springframework.statemachine.support.DefaultStateMachineContext;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -16,11 +18,13 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class ActivityTransitionService {
 
-    private final StateMachine<ActivityState, Event> stateMachine;
+    private final StateMachineFactory<ActivityState, Event> stateMachineFactory;
+    private final ActivityRepository activityRepository;
 
     public String makeTransition(Event transition) {
         var message = MessageBuilder
                 .withPayload(transition).build();
+        var stateMachine = getStateMachine(1);
         var currentState = stateMachine.getState();
         var results = stateMachine.sendEvent(Mono.just(message))
                 .collectList().block();
@@ -34,13 +38,16 @@ public class ActivityTransitionService {
         return String.format("%s -> %s", currentState.getId().name(), newState.getId().name());
     }
 
-    public void setState(StateMachine<ActivityState, Event> stateMachine, ActivityState state) {
+    public StateMachine<ActivityState, Event> getStateMachine(Integer activityId) {
+        var stateMachine = stateMachineFactory.getStateMachine();
+        var activity = activityRepository.getActivity(activityId);
         stateMachine
                 .getStateMachineAccessor()
                 .doWithAllRegions(access -> {
-                    access.resetStateMachine(new DefaultStateMachineContext<>(state, null, null, null, null));
+                    access.resetStateMachine(new DefaultStateMachineContext<>(activity.getState(), null, null, null, null));
                 });
         stateMachine.startReactively().subscribe();
+        return stateMachine;
     }
 
 }

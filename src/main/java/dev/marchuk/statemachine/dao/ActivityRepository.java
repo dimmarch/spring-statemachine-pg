@@ -21,7 +21,7 @@ public class ActivityRepository {
     public Activity createActivity(Integer id) {
         var activity = Activity.builder()
                 .id(id)
-                .activityState(ActivityState.CREATED)
+                .state(ActivityState.CREATED)
                 .name("Activity #" + id)
                 .description("activity number " + id + " is not that bad")
                 .duration(Duration.ofMinutes(42))

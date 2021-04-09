@@ -4,7 +4,7 @@ import dev.marchuk.statemachine.config.statemachine.ActivityStateMachineApplicat
 import dev.marchuk.statemachine.domain.Event;
 import dev.marchuk.statemachine.domain.ActivityState;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.statemachine.config.EnableStateMachine;
+import org.springframework.statemachine.config.EnableStateMachineFactory;
 import org.springframework.statemachine.config.EnumStateMachineConfigurerAdapter;
 import org.springframework.statemachine.config.builders.StateMachineConfigurationConfigurer;
 import org.springframework.statemachine.config.builders.StateMachineStateConfigurer;
@@ -13,7 +13,7 @@ import org.springframework.statemachine.config.builders.StateMachineTransitionCo
 import java.util.EnumSet;
 
 @Configuration
-@EnableStateMachine
+@EnableStateMachineFactory
 public class ActivityStateMachineConfig extends EnumStateMachineConfigurerAdapter<ActivityState, Event> {
 
     @Override

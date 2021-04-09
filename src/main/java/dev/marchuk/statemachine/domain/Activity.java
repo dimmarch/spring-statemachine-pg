@@ -9,7 +9,7 @@ import java.time.Duration;
 @Builder
 public class Activity {
     private Integer id;
-    private ActivityState activityState;
+    private ActivityState state;
     private String name;
     private String description;
     private Duration duration;
