@@ -21,10 +21,10 @@ public class ActivityTransitionService {
     private final StateMachineFactory<ActivityState, Event> stateMachineFactory;
     private final ActivityRepository activityRepository;
 
-    public String makeTransition(Event transition) {
+    public String makeTransition(Integer activityId, Event transition) {
         var message = MessageBuilder
                 .withPayload(transition).build();
-        var stateMachine = getStateMachine(1);
+        var stateMachine = getStateMachine(activityId);
         var currentState = stateMachine.getState();
         var results = stateMachine.sendEvent(Mono.just(message))
                 .collectList().block();
@@ -46,6 +46,7 @@ public class ActivityTransitionService {
                 .doWithAllRegions(access -> {
                     access.resetStateMachine(new DefaultStateMachineContext<>(activity.getState(), null, null, null, null));
                 });
+        stateMachine.getExtendedState().getVariables().put("ACTIVITY_ID", activityId);
         stateMachine.startReactively().subscribe();
         return stateMachine;
     }

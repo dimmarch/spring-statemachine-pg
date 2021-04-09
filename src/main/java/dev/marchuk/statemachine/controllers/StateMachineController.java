@@ -14,9 +14,9 @@ public class StateMachineController {
 
     private final ActivityTransitionService activityTransitionService;
 
-    @GetMapping("/api/event")
-    public String event(String event) {
-        var transition = Event.valueOf(event);
-        return activityTransitionService.makeTransition(transition);
+    @GetMapping("/api/transition")
+    public String transition(Integer activityId, String transition) {
+        var event = Event.valueOf(transition);
+        return activityTransitionService.makeTransition(activityId, event);
     }
 }
