@@ -1,6 +1,7 @@
 package dev.marchuk.statemachine.controllers;
 
 import dev.marchuk.statemachine.domain.Event;
+import dev.marchuk.statemachine.domain.Role;
 import dev.marchuk.statemachine.service.ActivityTransitionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,8 +16,8 @@ public class StateMachineController {
     private final ActivityTransitionService activityTransitionService;
 
     @GetMapping("/api/transition")
-    public String transition(Integer activityId, String transition) {
+    public String transition(Integer activityId, String transition, Role role) {
         var event = Event.valueOf(transition);
-        return activityTransitionService.makeTransition(activityId, event);
+        return activityTransitionService.makeTransition(role, activityId, event);
     }
 }

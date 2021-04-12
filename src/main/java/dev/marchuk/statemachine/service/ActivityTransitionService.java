@@ -4,6 +4,7 @@ import dev.marchuk.statemachine.dao.ActivityRepository;
 import dev.marchuk.statemachine.domain.Activity;
 import dev.marchuk.statemachine.domain.ActivityState;
 import dev.marchuk.statemachine.domain.Event;
+import dev.marchuk.statemachine.domain.Role;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.support.MessageBuilder;
@@ -20,14 +21,18 @@ import reactor.core.publisher.Mono;
 public class ActivityTransitionService {
 
     private final StateMachineFactory<ActivityState, Event> stateMachineFactory;
+    private final TransitionPermissionChecker transitionPermissionChecker;
     private final ActivityRepository activityRepository;
 
-    public String makeTransition(Integer activityId, Event transition) {
+    public String makeTransition(Role role, Integer activityId, Event transition) {
         var activity = activityRepository.getActivity(activityId);
         var stateMachine = getStateMachine(activity);
         var message = MessageBuilder
                 .withPayload(transition).build();
         var currentState = stateMachine.getState();
+        if (!transitionPermissionChecker.isPermitted(role, currentState.getId(), transition)) {
+            throw new UnsupportedOperationException(transition.name() + " event is not permitted");
+        }
         var results = stateMachine.sendEvent(Mono.just(message))
                 .collectList().block();
         var isSucceeded = results.stream()

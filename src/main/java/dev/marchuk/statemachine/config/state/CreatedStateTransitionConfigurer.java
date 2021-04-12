@@ -20,7 +20,7 @@ public class CreatedStateTransitionConfigurer implements StateTransitionConfigur
     @Override
     public StateTransitionPermissions getPermissions() {
         return new StateTransitionPermissions()
-                .add(Role.ADMIN, List.of(Event.EDIT, Event.DELETE, Event.SEND_FOR_APPROVE, Event.PUBLISH));
+                .add(Role.ADMIN, List.of(Event.EDIT, Event.DELETE, Event.SEND_FOR_APPROVE));
     }
 
     @Override
