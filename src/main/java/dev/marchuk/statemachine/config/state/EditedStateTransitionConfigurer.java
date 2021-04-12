@@ -2,14 +2,23 @@ package dev.marchuk.statemachine.config.state;
 
 import dev.marchuk.statemachine.domain.ActivityState;
 import dev.marchuk.statemachine.domain.Event;
+import dev.marchuk.statemachine.domain.Role;
 import org.springframework.statemachine.config.builders.StateMachineTransitionConfigurer;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.Map;
 
 @Component
 public class EditedStateTransitionConfigurer implements StateTransitionConfigurer {
     @Override
     public ActivityState getState() {
         return ActivityState.EDITED;
+    }
+
+    @Override
+    public Map<Role, List<Event>> getTransitionsPermissionMap() {
+        return Map.of(Role.ADMIN, List.of(Event.SEND_FOR_APPROVE, Event.EDIT, Event.PUBLISH));
     }
 
     @Override
