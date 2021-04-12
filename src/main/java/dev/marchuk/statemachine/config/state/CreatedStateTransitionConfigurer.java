@@ -1,5 +1,6 @@
 package dev.marchuk.statemachine.config.state;
 
+import dev.marchuk.statemachine.config.StateTransitionPermissions;
 import dev.marchuk.statemachine.domain.ActivityState;
 import dev.marchuk.statemachine.domain.Event;
 import dev.marchuk.statemachine.domain.Role;
@@ -7,7 +8,6 @@ import org.springframework.statemachine.config.builders.StateMachineTransitionCo
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Map;
 
 
 @Component
@@ -18,8 +18,9 @@ public class CreatedStateTransitionConfigurer implements StateTransitionConfigur
     }
 
     @Override
-    public Map<Role, List<Event>> getTransitionsPermissionMap() {
-        return Map.of(Role.ADMIN, List.of(Event.EDIT, Event.DELETE, Event.SEND_FOR_APPROVE, Event.PUBLISH));
+    public StateTransitionPermissions getPermissions() {
+        return new StateTransitionPermissions()
+                .add(Role.ADMIN, List.of(Event.EDIT, Event.DELETE, Event.SEND_FOR_APPROVE, Event.PUBLISH));
     }
 
     @Override
