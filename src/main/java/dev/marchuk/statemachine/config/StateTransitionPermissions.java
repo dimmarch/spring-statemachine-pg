@@ -3,6 +3,7 @@ package dev.marchuk.statemachine.config;
 import dev.marchuk.statemachine.domain.Event;
 import dev.marchuk.statemachine.domain.Role;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -29,5 +30,10 @@ public class StateTransitionPermissions {
         return Optional.ofNullable(permissionMap.get(role))
                 .map(events -> events.contains(event))
                 .orElse(false);
+    }
+
+    public Set<Event> getAvailableTransitions(Role role) {
+        return Optional.ofNullable(permissionMap.get(role))
+                .orElse(Collections.emptySet());
     }
 }

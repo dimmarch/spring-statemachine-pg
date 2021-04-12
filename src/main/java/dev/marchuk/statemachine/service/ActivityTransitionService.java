@@ -15,6 +15,8 @@ import org.springframework.statemachine.support.DefaultStateMachineContext;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+import java.util.Set;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -47,7 +49,7 @@ public class ActivityTransitionService {
         return String.format("%s -> %s", currentState.getId().name(), newState.getId().name());
     }
 
-    public StateMachine<ActivityState, Event> getStateMachine(Activity activity) {
+    private StateMachine<ActivityState, Event> getStateMachine(Activity activity) {
         var stateMachine = stateMachineFactory.getStateMachine();
         stateMachine
                 .getStateMachineAccessor()
@@ -57,6 +59,10 @@ public class ActivityTransitionService {
         stateMachine.getExtendedState().getVariables().put("ACTIVITY_ID", activity.getId());
         stateMachine.startReactively().subscribe();
         return stateMachine;
+    }
+
+    public Set<Event> getAvailableTransitions(Role role, Activity activity) {
+        return transitionPermissionChecker.getAvailableTransitions(role, activity.getState());
     }
 
 }

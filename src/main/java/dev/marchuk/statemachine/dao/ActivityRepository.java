@@ -14,11 +14,12 @@ public class ActivityRepository {
     private Map<Integer, Activity> activityMap = new HashMap<>();
 
     public ActivityRepository() {
-        createActivity(1);
-        createActivity(2);
+        createActivity();
+        createActivity();
     }
 
-    public Activity createActivity(Integer id) {
+    public Activity createActivity() {
+        var id = activityMap.keySet().size() + 1;
         var activity = Activity.builder()
                 .id(id)
                 .state(ActivityState.CREATED)
@@ -27,7 +28,7 @@ public class ActivityRepository {
                 .duration(Duration.ofMinutes(42))
                 .provider(createProvider(id))
                 .build();
-        activityMap.put(id, activity);
+        saveActivity(activity);
         return activity;
     }
 
