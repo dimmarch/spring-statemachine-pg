@@ -1,4 +1,4 @@
-package dev.marchuk.statemachine.config.statemachine;
+package dev.marchuk.statemachine.config.listner;
 
 import dev.marchuk.statemachine.domain.Event;
 import dev.marchuk.statemachine.domain.ActivityState;
