@@ -34,6 +34,7 @@ public class ActivityController {
         model.addAttribute("state", activity.getState().name());
         var events = activityTransitionService.getAvailableTransitions(role, activity);
         model.addAttribute("events", events);
+        model.addAttribute("roles", Role.values());
         return "activity";
     }
 

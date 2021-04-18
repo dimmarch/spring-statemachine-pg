@@ -15,7 +15,15 @@
     <h1>Available transitions:</h1>
     <div th:each="event: ${events}">
         <a th:href="@{/activity(activityId=${activityId}, transition=${event}, role=${role})}" th:text="${event}">
+        </a>
+        <br/>
+    </div>
 
+</section>
+<section>
+    <h1>Roles:</h1>
+    <div th:each="availiableRole: ${roles}">
+        <a th:href="@{/activity(activityId=${activityId}, role=${availiableRole})}" th:text="${availiableRole}">
         </a>
         <br/>
     </div>
