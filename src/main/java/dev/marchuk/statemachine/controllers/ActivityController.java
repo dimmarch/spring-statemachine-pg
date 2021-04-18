@@ -24,7 +24,10 @@ public class ActivityController {
             role = Role.ADMIN;
         }
 
-        var activity = activityId == null ? activityRepository.createActivity() : activityRepository.getActivity(activityId);
+        var activity = activityRepository.getActivity(activityId);
+        if (activity == null) {
+            activity = activityRepository.createActivity();
+        }
         if (transition != null) {
             try {
                 activityTransitionService.makeTransition(role, activity.getId(), transition);
