@@ -1,6 +1,7 @@
 package dev.marchuk.statemachine.controllers;
 
 import dev.marchuk.statemachine.dao.ActivityRepository;
+import dev.marchuk.statemachine.domain.Activity;
 import dev.marchuk.statemachine.domain.Event;
 import dev.marchuk.statemachine.domain.Role;
 import dev.marchuk.statemachine.service.ActivityTransitionService;
@@ -9,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+
+import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
@@ -42,6 +45,10 @@ public class ActivityController {
         var events = activityTransitionService.getAvailableTransitions(role, activity);
         model.addAttribute("events", events);
         model.addAttribute("roles", Role.values());
+        var activityIds = activityRepository.getActivities().stream()
+                .map(Activity::getId)
+                .collect(Collectors.toList());
+        model.addAttribute("activityIds", activityIds);
         return "activity";
     }
 

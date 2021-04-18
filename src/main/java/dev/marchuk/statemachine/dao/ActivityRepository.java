@@ -6,7 +6,9 @@ import dev.marchuk.statemachine.domain.Provider;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -42,6 +44,10 @@ public class ActivityRepository {
 
     public Activity getActivity(Integer activityId) {
         return activityMap.get(activityId);
+    }
+
+    public List<Activity> getActivities() {
+        return new ArrayList<>(activityMap.values());
     }
 
     public Activity saveActivity(Activity activity) {

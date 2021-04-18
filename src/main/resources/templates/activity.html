@@ -18,7 +18,6 @@
         </a>
         <br/>
     </div>
-
 </section>
 <section>
     <h1>Roles:</h1>
@@ -27,7 +26,21 @@
         </a>
         <br/>
     </div>
+</section>
 
+<section>
+    <h1>Activities:</h1>
+    <div th:each="dbActivityId: ${activityIds}">
+        <a th:href="@{/activity(activityId=${dbActivityId}, role=${role})}" th:text="${dbActivityId}">
+        </a>
+        <br/>
+    </div>
+    <div>
+        <a th:href="@{/activity(role=${role})}">
+            Add new
+        </a>
+        <br/>
+    </div>
 </section>
 
 <br/>
