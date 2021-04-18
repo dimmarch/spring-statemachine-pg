@@ -26,7 +26,11 @@ public class ActivityController {
 
         var activity = activityId == null ? activityRepository.createActivity() : activityRepository.getActivity(activityId);
         if (transition != null) {
-            activityTransitionService.makeTransition(role, activity.getId(), transition);
+            try {
+                activityTransitionService.makeTransition(role, activity.getId(), transition);
+            } catch (Exception e) {
+                model.addAttribute("errorMessage", e.getMessage());
+            }
         }
         model.addAttribute("activityId", activity.getId());
         model.addAttribute("state", activity.getState().name());
