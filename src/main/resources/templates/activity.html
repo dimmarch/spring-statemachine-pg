@@ -4,49 +4,213 @@
     <meta charset="UTF-8"/>
     <title>Activity State Machine</title>
 </head>
+<style>
+    html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        background-color: #fefae0;
+    }
+
+    .container {
+        width: 800px;
+        margin: auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-content: center;
+        padding: 10pt;
+    }
+
+    .header {
+        background-color: #ccd5ae;
+        display: flex;
+        justify-content: center;
+        padding: 10pt;
+        border-radius: 10px;
+        margin: 0 0 5pt 0;
+    }
+
+    .header_error {
+        color: red;
+        background-color: #f4978e;
+    }
+
+    .controller {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    .left_column {
+        width: 300px;
+        padding-right: 5pt;
+    }
+
+    .right_column {
+        flex-grow: 1;
+        display: flex;
+        justify-content: center;
+        align-items: stretch;
+    }
+
+    .block {
+        background-color: #faedcd;
+        border: 1px solid #ccd5ae;
+        border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        margin-bottom: 5pt;
+        width: 100%;
+    }
+
+    .row {
+        border-bottom: 1px solid #ccd5ae;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    .row:last-of-type {
+        border-bottom: none;
+    }
+
+    .row_header {
+        padding: 10pt;
+        font-size: 18pt;
+        font-weight: bold;
+        background-color: #e9edc9;
+        justify-content: center;
+    }
+
+    .row_selected {
+        font-weight: bold;
+    }
+
+    .row_clickable {
+        width: 100%;
+        justify-content: center;
+        display: flex;
+        background-color: #e9edc9;
+    }
+
+    .row_clickable:hover {
+        background-color: #ccd5ae;
+    }
+
+    .row_activities {
+        flex-direction: row;
+        justify-content: left;
+        padding: 10pt 10pt 5pt 5pt;
+        flex-wrap: wrap;
+    }
+
+    .row_element {
+        padding: 10pt;
+    }
+
+    .row_element__title {
+        font-weight: bold;
+    }
+
+    .row_element__left {
+        margin-left: auto;
+    }
+
+    .row_element__center {
+        margin: auto;
+    }
+
+    .button {
+        width: 30px;
+        height: 30px;
+        align-items: center;
+        border: 1px solid #ccd5ae;
+        border-radius: 10px;
+        display: flex;
+        justify-content: center;
+        background-color: #e9edc9;
+        margin-left: 5pt;
+        margin-bottom: 5pt;
+    }
+
+    .button:hover {
+        background-color: #ccd5ae;
+    }
+
+</style>
 <body>
-<h1>Activity State Machine</h1>
-<section>
-    <div><b>Activity id:</b> <span th:text="${activityId}"/></div>
-    <div><b>Activity state:</b> <span th:text="${state}"/></div>
-    <div><b>User role:</b> <span th:text="${role}"/></div>
-</section>
-<section>
-    <h1>Available transitions:</h1>
-    <div th:each="event: ${events}">
-        <a th:href="@{/activity(activityId=${activityId}, transition=${event}, role=${role})}" th:text="${event}">
-        </a>
-        <br/>
-    </div>
-</section>
-<section>
-    <h1>Roles:</h1>
-    <div th:each="availiableRole: ${roles}">
-        <a th:href="@{/activity(activityId=${activityId}, role=${availiableRole})}" th:text="${availiableRole}">
-        </a>
-        <br/>
-    </div>
-</section>
+<div class="container">
+    <h1 class="header">Activity State Machine</h1>
+    <h1 class="header header_error" th:if="${errorMessage}" th:utext="${errorMessage}">
+        ...
+    </h1>
+    <div class="controller">
+        <div class="left_column">
+            <section class="block">
+                <div class="row row_header">
+                    Activity State
+                </div>
+                <div class="row">
+                    <div class="row_element row_element__title">Id:</div>
+                    <span class="row_element row_element__left" th:text="${activityId}"> 1</span>
+                </div>
+                <div class="row">
+                    <div class="row_element row_element__title">State:</div>
+                    <span class="row_element row_element__left" th:text="${state}">CREATED</span>
+                </div>
+            </section>
 
-<section>
-    <h1>Activities:</h1>
-    <div th:each="dbActivityId: ${activityIds}">
-        <a th:href="@{/activity(activityId=${dbActivityId}, role=${role})}" th:text="${dbActivityId}">
-        </a>
-        <br/>
-    </div>
-    <div>
-        <a th:href="@{/activity(role=${role})}">
-            Add new
-        </a>
-        <br/>
-    </div>
-</section>
+            <section class="block">
+                <div class="row row_header">Role Switcher</div>
+                <div class="row" th:each="availableRole: ${roles}">
+                    <div th:if="${availableRole.name() == role}"
+                         class="row_element row_element__center row_selected" th:text="${availableRole}">
+                        ADMIN
+                    </div>
+                    <a th:if="${availableRole.name() != role}" class="row_element row_element__center row_clickable"
+                       th:href="@{/activity(activityId=${activityId}, role=${availableRole})}"
+                       th:text="${availableRole}">
+                        PROVIDER
+                    </a>
+                </div>
+            </section>
+        </div>
 
-<br/>
-<div th:if="${errorMessage}" th:utext="${errorMessage}"
-     style="color:red;font-style:italic;">
-    ...
+        <div class="right_column">
+            <section class="block">
+                <div class="row row_header">Transitions</div>
+                <div class="row" th:each="event: ${events}">
+                    <a class="row_element row_element__center row_clickable"
+                       th:href="@{/activity(activityId=${activityId}, transition=${event}, role=${role})}"
+                       th:text="${event}">
+                    </a>
+                </div>
+                <div class="row">
+                </div>
+            </section>
+        </div>
+
+        <br/>
+    </div>
+    <div class="right_column">
+        <section class="block">
+            <div class="row row_header">Change Activity</div>
+            <div class="row row_activities">
+                <div class="button" th:each="dbActivityId: ${activityIds}">
+                    <a th:href="@{/activity(activityId=${dbActivityId}, role=${role})}" th:text="${dbActivityId}">
+                        1
+                    </a>
+                </div>
+            </div>
+            <div class="row">
+                <a class="row_element row_element__center row_clickable" th:href="@{/activity(role=${role})}">
+                    ADD NEW
+                </a>
+            </div>
+        </section>
+    </div>
 </div>
 
 </body>
