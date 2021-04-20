@@ -99,6 +99,15 @@
         background-color: #ccd5ae;
     }
 
+    .row_clickable__forbidden {
+        background-color: #f5cac3;
+    }
+
+    .row_clickable__forbidden:hover {
+        background-color: #f28482;
+    }
+
+
     .row_activities {
         flex-direction: row;
         justify-content: left;
@@ -198,7 +207,13 @@
             <section class="block">
                 <div class="row row_header">Transitions</div>
                 <div class="row" th:each="event: ${events}">
-                    <a class="row_element row_element__center row_clickable"
+                    <a th:if="${permittedEvents.contains(event)}"
+                       class="row_element row_element__center row_clickable"
+                       th:href="@{/activity(activityId=${activityId}, transition=${event}, role=${role})}"
+                       th:text="${event}">
+                    </a>
+                    <a th:if="${!permittedEvents.contains(event)}"
+                       class="row_element row_element__center row_clickable row_clickable__forbidden"
                        th:href="@{/activity(activityId=${activityId}, transition=${event}, role=${role})}"
                        th:text="${event}">
                     </a>

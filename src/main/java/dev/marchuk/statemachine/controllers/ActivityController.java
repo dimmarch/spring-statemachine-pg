@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
@@ -43,7 +44,8 @@ public class ActivityController {
         model.addAttribute("role", role.name());
         model.addAttribute("state", activity.getState().name());
         var events = activityTransitionService.getAvailableTransitions(role, activity);
-        model.addAttribute("events", events);
+        model.addAttribute("permittedEvents", events);
+        model.addAttribute("events", List.of(Event.values()));
         model.addAttribute("roles", Role.values());
         var activityIds = activityRepository.getActivities().stream()
                 .map(Activity::getId)
