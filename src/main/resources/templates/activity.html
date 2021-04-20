@@ -163,11 +163,11 @@
                 </div>
                 <div class="row">
                     <div class="row_element row_element__title">Id:</div>
-                    <span class="row_element row_element__left" th:text="${activityId}"> 1</span>
+                    <span class="row_element row_element__left" th:text="${activityId}"></span>
                 </div>
                 <div class="row">
                     <div class="row_element row_element__title">State:</div>
-                    <span class="row_element row_element__left" th:text="${state}">CREATED</span>
+                    <span class="row_element row_element__left" th:text="${state}"></span>
                 </div>
             </section>
 
@@ -176,12 +176,10 @@
                 <div class="row" th:each="availableRole: ${roles}">
                     <div th:if="${availableRole.name() == role}"
                          class="row_element row_element__center row_selected" th:text="${availableRole}">
-                        ADMIN
                     </div>
                     <a th:if="${availableRole.name() != role}" class="row_element row_element__center row_clickable"
                        th:href="@{/activity(activityId=${activityId}, role=${availableRole})}"
                        th:text="${availableRole}">
-                        PROVIDER
                     </a>
                 </div>
             </section>
@@ -189,11 +187,9 @@
             <section class="block">
                 <div class="row row_header">Change Activity</div>
                 <div class="row row_activities">
-                    <div class="button" th:each="dbActivityId: ${activityIds}">
-                        <a th:href="@{/activity(activityId=${dbActivityId}, role=${role})}" th:text="${dbActivityId}">
-                            1
-                        </a>
-                    </div>
+                    <a class="button" th:each="dbActivityId: ${activityIds}"
+                       th:href="@{/activity(activityId=${dbActivityId}, role=${role})}" th:text="${dbActivityId}">
+                    </a>
                 </div>
                 <div class="row">
                     <a class="row_element row_element__center row_clickable" th:href="@{/activity(role=${role})}">
