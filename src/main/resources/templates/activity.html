@@ -176,6 +176,22 @@
                     </a>
                 </div>
             </section>
+
+            <section class="block">
+                <div class="row row_header">Change Activity</div>
+                <div class="row row_activities">
+                    <div class="button" th:each="dbActivityId: ${activityIds}">
+                        <a th:href="@{/activity(activityId=${dbActivityId}, role=${role})}" th:text="${dbActivityId}">
+                            1
+                        </a>
+                    </div>
+                </div>
+                <div class="row">
+                    <a class="row_element row_element__center row_clickable" th:href="@{/activity(role=${role})}">
+                        ADD NEW
+                    </a>
+                </div>
+            </section>
         </div>
 
         <div class="right_column">
@@ -194,23 +210,11 @@
 
         <br/>
     </div>
+
     <div class="right_column">
-        <section class="block">
-            <div class="row row_header">Change Activity</div>
-            <div class="row row_activities">
-                <div class="button" th:each="dbActivityId: ${activityIds}">
-                    <a th:href="@{/activity(activityId=${dbActivityId}, role=${role})}" th:text="${dbActivityId}">
-                        1
-                    </a>
-                </div>
-            </div>
-            <div class="row">
-                <a class="row_element row_element__center row_clickable" th:href="@{/activity(role=${role})}">
-                    ADD NEW
-                </a>
-            </div>
-        </section>
+
     </div>
+
 </div>
 
 </body>
